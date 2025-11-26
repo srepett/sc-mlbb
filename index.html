@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Navigasi Hero Role</title>
+    <style>
+        /* ==================================== */
+        /* CSS Umum */
+        /* ==================================== */
+        :root {
+            --primary-color: #00DDFF;
+            --text-color: #333;
+            --bg-color: #f4f4f9;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Container Utama */
+        #app {
+            max-width: 900px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Untuk homepage */
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        /* Tombol Dasar (Sesuai Tema) */
+        .btn, .role-btn {
+            background-color: var(--primary-color);
+            color: #000; /* Teks hitam agar kontras dengan latar #00DDFF */
+            border: none;
+            padding: 15px 30px;
+            text-decoration: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.1s;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover, .role-btn:hover {
+            background-color: #00b3d1;
+            transform: translateY(-2px);
+        }
+
+        /* ==================================== */
+        /* Level 1: Homepage */
+        /* ==================================== */
+        .homepage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh; /* Agar tombol benar-benar di tengah layar */
+        }
+        
+        .homepage h1 {
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+
+        .main-btn {
+            padding: 20px 60px;
+            font-size: 1.5em;
+        }
+
+        /* ==================================== */
+        /* Level 2 & 3: Role & Hero List */
+        /* ==================================== */
+        .page-content {
+            text-align: left;
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .role-grid, .hero-list {
+            display: grid;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        /* Level 2: Role Grid */
+        .role-grid {
+            grid-template-columns: repeat(3, 1fr); /* 3 kolom untuk desktop */
+        }
+
+        .role-btn {
+            text-align: center;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Level 3: Hero List */
+        .hero-list {
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Responsif */
+        }
+        
+        .hero-list .btn {
+            padding: 15px 10px;
+            font-size: 1em;
+        }
+
+        /* Navigasi Breadcrumb (kembali) */
+        .breadcrumb {
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #666;
+            text-align: left;
+        }
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        /* ==================================== */
+        /* Media Query (Mobile Responsif) */
+        /* ==================================== */
+        @media (max-width: 600px) {
+            #app {
+                padding: 10px;
+            }
+            
+            .homepage h1 {
+                font-size: 2em;
+            }
+
+            .main-btn {
+                padding: 15px 40px;
+                font-size: 1.2em;
+            }
+
+            .role-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 kolom untuk mobile */
+            }
+
+            .role-btn {
+                height: 100px;
+                font-size: 1.1em;
+            }
+            
+            .hero-list {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        </div>
+
+    <script>
+        // ====================================
+        // JS Data
+        // ====================================
+        const rolesData = {
+            Assassin: ['Lancelot', 'Fanny', 'Hayabusa', 'Aamon'],
+            Fighter: ['Alucard', 'Lapu-Lapu', 'Zilong', 'Chou'],
+            Mage: ['Nana', 'Novaria', 'Pharsa', 'Valentina'],
+            Tank: ['Franco', 'Tigreal', 'Atlas', 'Grock'],
+            Support: ['Floryn', 'Mathilda', 'Angela', 'Estes'],
+            Marksman: ['Miya', 'Granger', 'Brody', 'Beatrix']
+        };
+
+        const app = document.getElementById('app');
+
+        // ====================================
+        // JS Fungsi Rendering Halaman
+        // ====================================
+
+        /** RENDER TINGKAT 1: HOMEPAGE **/
+        function renderHomepage() {
+            app.className = 'homepage';
+            app.innerHTML = `
+                <h1>Selamat Datang di Daftar Role Hero</h1>
+                <button class="btn main-btn" onclick="navigateTo('/Role')">MULAI / Lihat Daftar</button>
+            `;
+        }
+
+        /** RENDER TINGKAT 2: ROLE LIST **/
+        function renderRoleList() {
+            app.className = 'page-content';
+            const roleButtons = Object.keys(rolesData).map(role => `
+                <button class="role-btn" onclick="navigateTo('/Role/${role}/Hero')">${role}</button>
+            `).join('');
+
+            app.innerHTML = `
+                <div class="breadcrumb">
+                    <a href="#" onclick="navigateTo('/')">Home</a>
+                    <span>/ Role</span>
+                </div>
+                <h2>Pilih Kategori Role Hero</h2>
+                <div class="role-grid">${roleButtons}</div>
+            `;
+        }
+
+        /** RENDER TINGKAT 3: HERO LIST **/
+        function renderHeroList(roleName) {
+            if (!rolesData[roleName]) {
+                app.innerHTML = '<h2>404 Role Tidak Ditemukan</h2><button class="btn" onclick="navigateTo(\'/Role\')">Kembali ke Role List</button>';
+                return;
+            }
+            
+            app.className = 'page-content';
+            const heroes = rolesData[roleName];
+            const heroButtons = heroes.map(hero => `
+                <button class="btn" onclick="showHeroDetail('${roleName}', '${hero}')">${hero}</button>
+            `).join('');
+            
+            app.innerHTML = `
+                <div class="breadcrumb">
+                    <a href="#" onclick="navigateTo('/')">Home</a>
+                    <span>/ </span>
+                    <a href="#" onclick="navigateTo('/Role')">Role</a>
+                    <span>/ ${roleName}</span>
+                </div>
+                <h2>Daftar Hero untuk Role: ${roleName}</h2>
+                <div class="hero-list">${heroButtons}</div>
+            `;
+        }
+        
+        /** RENDER TINGKAT 4 (PILIHAN A): DETAIL HERO **/
+        function renderHeroDetail(roleName, heroName) {
+            app.className = 'page-content';
+            app.innerHTML = `
+                <div class="breadcrumb">
+                    <a href="#" onclick="navigateTo('/')">Home</a>
+                    <span>/ </span>
+                    <a href="#" onclick="navigateTo('/Role')">Role</a>
+                    <span>/ </span>
+                    <a href="#" onclick="navigateTo('/Role/${roleName}/Hero')">${roleName}</a>
+                    <span>/ ${heroName}</span>
+                </div>
+                <h2>Detail Hero: ${heroName}</h2>
+                <p>Ini adalah halaman detail untuk **${heroName}** dari Role **${roleName}**.</p>
+                <p>Implementasi detail spesifik (gambar, skill, statistik, dll.) akan ditambahkan di sini.</p>
+                <button class="btn" style="margin-top: 20px;" onclick="navigateTo('/Role/${roleName}/Hero')">Kembali ke Daftar ${roleName}</button>
+            `;
+        }
+
+
+        // ====================================
+        // JS Routing Logika
+        // ====================================
+
+        /** Fungsi Utama untuk Navigasi (Merespons URL Path) **/
+        function router() {
+            const path = window.location.pathname;
+            
+            if (path === '/' || path === '/index.html') {
+                renderHomepage();
+            } else if (path === '/Role') {
+                renderRoleList();
+            } else if (path.startsWith('/Role/') && path.endsWith('/Hero')) {
+                // Contoh: /Role/Assassin/Hero
+                const parts = path.split('/'); // ["", "Role", "Assassin", "Hero"]
+                const roleName = parts[2];
+                renderHeroList(roleName);
+            } else if (path.startsWith('/Role/') && path.includes('/Hero/')) {
+                 // Contoh: /Role/Assassin/Hero/Lancelot
+                const parts = path.split('/'); // ["", "Role", "Assassin", "Hero", "Lancelot"]
+                const roleName = parts[2];
+                const heroName = parts[4];
+                renderHeroDetail(roleName, heroName);
+            } else {
+                app.className = 'homepage';
+                app.innerHTML = `
+                    <h1>404 Halaman Tidak Ditemukan</h1>
+                    <p>URL ${path} tidak valid.</p>
+                    <button class="btn main-btn" onclick="navigateTo('/')">Kembali ke Home</button>
+                `;
+            }
+        }
+
+        /** Mengubah URL dan Memicu Routing **/
+        function navigateTo(url) {
+            // Menggunakan history.pushState untuk mengubah URL tanpa me-reload halaman
+            window.history.pushState({}, '', url);
+            router(); // Panggil router untuk merender halaman baru
+        }
+        
+        /** Fungsi untuk aksi Tombol Hero (Mengarah ke Detail) **/
+        function showHeroDetail(roleName, heroName) {
+            navigateTo(`/Role/${roleName}/Hero/${heroName}`);
+        }
+
+        // Panggil router saat halaman pertama kali dimuat
+        window.addEventListener('load', router);
+
+        // Panggil router saat tombol 'Back' atau 'Forward' browser ditekan
+        window.addEventListener('popstate', router);
+    </script>
+
+</body>
+  </html>
